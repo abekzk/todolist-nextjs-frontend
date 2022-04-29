@@ -2,8 +2,10 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
+import Button from '@mui/material/Button';
 
 import { initializeApp } from 'firebase/app';
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
   authDomain: 'todolist-89bb8.firebaseapp.com',
@@ -64,6 +66,7 @@ const Home: NextPage = () => {
             </p>
           </a>
         </div>
+        <Button variant="contained">Hello World</Button>
       </main>
 
       <footer className={styles.footer}>
