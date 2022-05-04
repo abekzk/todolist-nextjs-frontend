@@ -1,5 +1,13 @@
-import { Box, TextField, Button, Avatar, Grid, Link } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  Avatar,
+  Grid,
+  Link as MULink,
+} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -67,8 +75,8 @@ const SignIn = () => {
         </Button>
         <Grid container>
           <Grid item>
-            <Link href="#" variant="body2">
-              {'アカウントを作成する'}
+            <Link href="/signup" passHref>
+              <MULink variant="body2">{'アカウントを作成する'}</MULink>
             </Link>
           </Grid>
         </Grid>
