@@ -1,5 +1,4 @@
 import { Box, TextField, Button } from '@mui/material';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 
