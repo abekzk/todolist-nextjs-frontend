@@ -24,7 +24,7 @@ const firebaseConfig = {
   measurementId: 'G-GVWTC8F2CH',
 };
 
-const app = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 interface AuthState {
   user?: User | null;
