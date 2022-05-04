@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   async function handleLogout() {
     try {
       signOut();
-      router.push('/login');
+      router.push('/signin');
     } catch (err) {
       // TODO: エラーハンドリング
     }
@@ -22,7 +22,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (auth.user === null) {
-      router.push('/login');
+      router.push('/signin');
     }
   });
 
