@@ -2,8 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    dirs: ["src"]
-  }
+    dirs: ['src'],
+  },
 };
 
 module.exports = nextConfig;
