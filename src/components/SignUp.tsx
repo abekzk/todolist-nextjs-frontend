@@ -4,12 +4,37 @@ import {
   Button,
   Avatar,
   Grid,
+  Typography,
   Link as MULink,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Link from 'next/link';
+import { useAuth } from '../contexts/AuthContext';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const SignUp = () => {
+  const { signUp } = useAuth();
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const email = data.get('email');
+    const password = data.get('password');
+
+    if (typeof email != 'string' || typeof password != 'string') {
+      return;
+    }
+
+    try {
+      await signUp(email, password);
+      router.push('/');
+    } catch (err) {
+      // TODO: エラーハンドリング
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -22,21 +47,14 @@ const SignUp = () => {
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
         <LockOutlinedIcon />
       </Avatar>
-      <Box component="form" noValidate onSubmit={() => null} sx={{ mt: 3 }}>
+      <Typography component="h1" variant="h5">
+        Sign up
+      </Typography>
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
-              required
-              fullWidth
-              name="name"
-              id="name"
-              label="ユーザー名"
               autoFocus
-              autoComplete="name"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
               required
               fullWidth
               id="email"
@@ -63,7 +81,7 @@ const SignUp = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          ユーザー作成
+          アカウント作成
         </Button>
         <Grid container justifyContent="flex-end">
           <Grid item>

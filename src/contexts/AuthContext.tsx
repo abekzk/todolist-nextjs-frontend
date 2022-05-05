@@ -9,6 +9,7 @@ import { initializeApp } from 'firebase/app';
 import Firebase, {
   getAuth,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut as _signOut,
 } from 'firebase/auth';
@@ -32,6 +33,7 @@ interface AuthState {
 
 interface AuthContextType {
   auth: AuthState;
+  signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -40,6 +42,20 @@ const AuthContext = createContext({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   const [auth, setAuth] = useState<AuthState>({});
+
+  async function signUp(email: string, password: string) {
+    const firebaseAuth = getAuth();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        firebaseAuth,
+        email,
+        password
+      );
+      setAuth({ user: convUser(userCredential.user) });
+    } catch (err) {
+      // TODO: エラーハンドリング
+    }
+  }
 
   async function signIn(email: string, password: string) {
     const firebaseAuth = getAuth();
@@ -59,7 +75,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
     const firebaseAuth = getAuth();
     try {
       await _signOut(firebaseAuth);
-      setAuth({ user: undefined });
+      setAuth({ user: null });
     } catch (err) {
       // TODO: エラーハンドリング
     }
@@ -77,7 +93,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ auth, signIn, signOut }}>
+    <AuthContext.Provider value={{ auth, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
