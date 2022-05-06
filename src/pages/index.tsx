@@ -6,13 +6,12 @@ import { Button } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import { fetchTasks } from '../api/task';
+import { useTasks } from '../hooks/task';
 
 const Home: NextPage = () => {
   const { auth, signOut } = useAuth();
   const router = useRouter();
-  const query = useQuery('tasks', fetchTasks);
+  const tasks = useTasks();
 
   async function handleLogout() {
     try {

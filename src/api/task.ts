@@ -4,7 +4,7 @@ import { ResTask, resToTask } from './response';
 import { setTokenInterceptor } from './interceptor';
 
 const client = axios.create({
-  baseURL: 'http://' + process.env.NEXT_PUBLIC_API_DOMAIN,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 client.interceptors.request.use(setTokenInterceptor);

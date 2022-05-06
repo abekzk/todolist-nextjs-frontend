@@ -8,11 +8,11 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { AuthProvider } from '../contexts/AuthContext';
 import theme from '../styles/theme';
-
-const queryClient = new QueryClient();
+import { useState } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const clientSideEmotionCache = createCache({ key: 'css', prepend: true });
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <CacheProvider value={clientSideEmotionCache}>
