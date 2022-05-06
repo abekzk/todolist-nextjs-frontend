@@ -4,9 +4,12 @@ import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { AuthProvider } from '../contexts/AuthContext';
 import theme from '../styles/theme';
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const clientSideEmotionCache = createCache({ key: 'css', prepend: true });
@@ -15,9 +18,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <CacheProvider value={clientSideEmotionCache}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AuthProvider>
-          <Component {...pageProps} />
-        </AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>
   );

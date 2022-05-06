@@ -2,9 +2,9 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  status: StatusType;
+  status: TaskStatusType;
 }
 
-type StatusType = 'TODO' | 'DONE';
+export type TaskStatusType = 'TODO' | 'DONE';
 
 export default Task;
