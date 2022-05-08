@@ -1,11 +1,11 @@
+import { fetchTasks, createTask, updateTask, deleteTask } from '../api/task';
+import Task, { TaskStatusType } from '../models/task';
 import {
   useQuery,
   useMutation,
   useQueryClient,
   UseQueryResult,
 } from 'react-query';
-import Task, { TaskStatusType } from '../models/task';
-import { fetchTasks, createTask, updateTask, deleteTask } from '../api/task';
 
 interface TaskHookType {
   result: UseQueryResult<Task[]>;

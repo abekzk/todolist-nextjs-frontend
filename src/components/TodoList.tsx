@@ -1,3 +1,10 @@
+import { useTask } from '../hooks/task';
+import Task from '../models/task';
+import {
+  DeleteOutlineRounded as DeleteOutlineRoundedIcon,
+  Edit as EditIcon,
+  AddCircleOutlineRounded as AddCircleOutlineRoundedIcon,
+} from '@mui/icons-material';
 import {
   Box,
   Container,
@@ -14,14 +21,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import {
-  DeleteOutlineRounded as DeleteOutlineRoundedIcon,
-  Edit as EditIcon,
-  AddCircleOutlineRounded as AddCircleOutlineRoundedIcon,
-} from '@mui/icons-material';
-import { useTask } from '../hooks/task';
 import React, { useState } from 'react';
-import Task from '../models/task';
 
 const TodoList = () => {
   const { result, addTask, toggleTaskStatus, changeTask, removeTask } =

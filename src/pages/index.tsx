@@ -1,10 +1,10 @@
-import type { NextPage } from 'next';
-import { Button } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import TodoList from '../components/TodoList';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '@mui/material';
+import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const Home: NextPage = () => {
   const { auth, signOut } = useAuth();

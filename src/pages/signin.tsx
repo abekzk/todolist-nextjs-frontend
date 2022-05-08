@@ -1,7 +1,7 @@
-import type { NextPage } from 'next';
-import { Container } from '@mui/material';
 import Layout from '../components/Layout';
 import SignIn from '../components/SignIn';
+import { Container } from '@mui/material';
+import type { NextPage } from 'next';
 
 const SignInPage: NextPage = () => (
   <Layout title="ログイン">

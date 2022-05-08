@@ -1,10 +1,4 @@
-import {
-  ReactNode,
-  useContext,
-  useEffect,
-  createContext,
-  useState,
-} from 'react';
+import User from '../models/user';
 import { initializeApp } from 'firebase/app';
 import Firebase, {
   getAuth,
@@ -13,7 +7,13 @@ import Firebase, {
   signInWithEmailAndPassword,
   signOut as _signOut,
 } from 'firebase/auth';
-import User from '../models/user';
+import {
+  ReactNode,
+  useContext,
+  useEffect,
+  createContext,
+  useState,
+} from 'react';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,

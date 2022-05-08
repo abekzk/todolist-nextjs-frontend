@@ -1,7 +1,7 @@
 import Task from '../models/task';
-import axios from 'axios';
-import { ResTask, resToTask, taskToBody } from './response';
 import { setTokenInterceptor } from './interceptor';
+import { ResTask, resToTask, taskToBody } from './response';
+import axios from 'axios';
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
