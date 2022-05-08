@@ -18,9 +18,10 @@ import {
 } from '@mui/icons-material';
 import { useTask } from '../hooks/task';
 import React from 'react';
+import Task from '../models/task';
 
 const TodoList = () => {
-  const { result, addTask } = useTask();
+  const { result, addTask, toggleTaskStatus } = useTask();
   const task = result.data ?? [];
 
   function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
@@ -32,6 +33,11 @@ const TodoList = () => {
     }
     addTask(title);
   }
+
+  const handleToggleStatus = (task: Task) => {
+    toggleTaskStatus(task);
+  };
+
   return (
     <Box>
       <Container sx={{ pt: 4 }} maxWidth="sm">
@@ -63,9 +69,21 @@ const TodoList = () => {
           {task.map((task) => (
             <ListItem key={task.id}>
               <ListItemIcon>
-                <Checkbox edge="start" checked={false} tabIndex={-1} />
+                <Checkbox
+                  edge="start"
+                  checked={task.status === 'DONE'}
+                  tabIndex={-1}
+                  onChange={() => handleToggleStatus(task)}
+                />
               </ListItemIcon>
-              <ListItemText primary={task.title} secondary={task.description} />
+              <ListItemText
+                primary={task.title}
+                secondary={task.description}
+                sx={{
+                  textDecoration:
+                    task.status === 'DONE' ? 'line-through' : 'none',
+                }}
+              />
 
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="Edit" onClick={() => null}>

@@ -32,3 +32,13 @@ export async function createTask(task: Task): Promise<Task> {
     throw err; // TODO: エラーハンドリング
   }
 }
+
+export async function updateTask(task: Task): Promise<Task> {
+  try {
+    const body = taskToBody(task);
+    const res = await client.put<ResTask>(`/v1/tasks/${task.id}`, body);
+    return resToTask(res.data);
+  } catch (err) {
+    throw err; // TODO: エラーハンドリング
+  }
+}
