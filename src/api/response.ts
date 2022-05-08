@@ -22,3 +22,18 @@ export function resToTask(res: ResTask): Task {
   };
   return task;
 }
+
+export function taskToBody(task: Task): ResTask {
+  let status = 0;
+  if (task.status === 'DONE') {
+    status = 1;
+  }
+  const body: ResTask = {
+    id: task.id,
+    user_id: '', // NOTE: トークンよりAPI側が自動でセットするため不要
+    title: task.title,
+    description: task.description,
+    status: status,
+  };
+  return body;
+}

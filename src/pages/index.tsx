@@ -3,14 +3,12 @@ import { Button } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useTasks } from '../hooks/task';
 import Layout from '../components/Layout';
 import TodoList from '../components/TodoList';
 
 const Home: NextPage = () => {
   const { auth, signOut } = useAuth();
   const router = useRouter();
-  const tasks = useTasks();
 
   async function handleLogout() {
     try {

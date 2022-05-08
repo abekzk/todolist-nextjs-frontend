@@ -1,6 +1,6 @@
 import Task from '../models/task';
 import axios from 'axios';
-import { ResTask, resToTask } from './response';
+import { ResTask, resToTask, taskToBody } from './response';
 import { setTokenInterceptor } from './interceptor';
 
 const client = axios.create({
@@ -18,6 +18,16 @@ export async function fetchTasks(): Promise<Task[]> {
       return resToTask(resTask);
     });
     return tasks;
+  } catch (err) {
+    throw err; // TODO: エラーハンドリング
+  }
+}
+
+export async function createTask(task: Task): Promise<Task> {
+  try {
+    const body = taskToBody(task);
+    const res = await client.post<ResTask>('/v1/tasks', body);
+    return resToTask(res.data);
   } catch (err) {
     throw err; // TODO: エラーハンドリング
   }

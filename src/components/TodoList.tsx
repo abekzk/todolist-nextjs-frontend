@@ -17,24 +17,46 @@ import {
   AddCircleOutlineRounded as AddCircleOutlineRoundedIcon,
 } from '@mui/icons-material';
 import { useTasks } from '../hooks/task';
+import React from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { createTask } from '../api/task';
 
 const TodoList = () => {
   const tasks = useTasks();
+  const queryClient = useQueryClient();
+  const mutation = useMutation(createTask, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('tasks');
+    },
+  });
+
+  function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const title = data.get('title');
+    if (typeof title != 'string') {
+      return;
+    }
+    mutation.mutate({
+      id: '',
+      title: title,
+      description: '',
+      status: 'TODO',
+    });
+  }
   return (
     <Box>
       <Container sx={{ pt: 4 }} maxWidth="sm">
-        <form noValidate>
+        <form noValidate onSubmit={handleAddTask}>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="todo"
+            id="title"
             label="タスクを入力"
-            name="todo"
+            name="title"
             autoFocus
-            value=""
-            onChange={() => null}
           />
 
           <Button
@@ -42,7 +64,6 @@ const TodoList = () => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={() => null}
             startIcon={<AddCircleOutlineRoundedIcon />}
           >
             Add Todo
