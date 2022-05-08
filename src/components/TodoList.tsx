@@ -16,19 +16,12 @@ import {
   Edit as EditIcon,
   AddCircleOutlineRounded as AddCircleOutlineRoundedIcon,
 } from '@mui/icons-material';
-import { useTasks } from '../hooks/task';
+import { useTask } from '../hooks/task';
 import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { createTask } from '../api/task';
 
 const TodoList = () => {
-  const tasks = useTasks();
-  const queryClient = useQueryClient();
-  const mutation = useMutation(createTask, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('tasks');
-    },
-  });
+  const { result, addTask } = useTask();
+  const task = result.data ?? [];
 
   function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,12 +30,7 @@ const TodoList = () => {
     if (typeof title != 'string') {
       return;
     }
-    mutation.mutate({
-      id: '',
-      title: title,
-      description: '',
-      status: 'TODO',
-    });
+    addTask(title);
   }
   return (
     <Box>
@@ -72,7 +60,7 @@ const TodoList = () => {
       </Container>
       <Container sx={{ py: 8 }} maxWidth="md">
         <List dense={true}>
-          {tasks.map((task) => (
+          {task.map((task) => (
             <ListItem key={task.id}>
               <ListItemIcon>
                 <Checkbox edge="start" checked={false} tabIndex={-1} />
