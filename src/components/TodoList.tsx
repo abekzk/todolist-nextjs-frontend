@@ -10,6 +10,9 @@ import {
   Checkbox,
   ListItemIcon,
   TextField,
+  Dialog,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   DeleteOutlineRounded as DeleteOutlineRoundedIcon,
@@ -17,12 +20,14 @@ import {
   AddCircleOutlineRounded as AddCircleOutlineRoundedIcon,
 } from '@mui/icons-material';
 import { useTask } from '../hooks/task';
-import React from 'react';
+import React, { useState } from 'react';
 import Task from '../models/task';
 
 const TodoList = () => {
-  const { result, addTask, toggleTaskStatus } = useTask();
+  const { result, addTask, toggleTaskStatus, changeTask } = useTask();
   const task = result.data ?? [];
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Task>();
 
   function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,8 +39,37 @@ const TodoList = () => {
     addTask(title);
   }
 
+  const handleUpdateTask = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const data = new FormData(e.currentTarget);
+    const title = data.get('title');
+    const description = data.get('description');
+    if (typeof title != 'string' || typeof description != 'string') {
+      return;
+    }
+
+    if (!selected) {
+      return;
+    }
+    const update: Task = { ...selected, title, description };
+    changeTask(update);
+    setOpen(false);
+    setSelected(undefined);
+  };
+
   const handleToggleStatus = (task: Task) => {
     toggleTaskStatus(task);
+  };
+
+  const handleOpenUpdateDialog = (task: Task) => {
+    setOpen(true);
+    setSelected(task);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setSelected(undefined);
   };
 
   return (
@@ -86,7 +120,11 @@ const TodoList = () => {
               />
 
               <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="Edit" onClick={() => null}>
+                <IconButton
+                  edge="end"
+                  aria-label="Edit"
+                  onClick={() => handleOpenUpdateDialog(task)}
+                >
                   <EditIcon />
                 </IconButton>
                 <IconButton edge="end" aria-label="delete" onClick={() => null}>
@@ -96,6 +134,38 @@ const TodoList = () => {
             </ListItem>
           ))}
         </List>
+        <Dialog open={open} onClose={handleCloseDialog}>
+          <form noValidate onSubmit={handleUpdateTask}>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="normal"
+                label="タスク名"
+                type="text"
+                fullWidth
+                name="title"
+                defaultValue={selected?.title}
+              />
+              <TextField
+                autoFocus
+                margin="normal"
+                label="詳細"
+                type="text"
+                fullWidth
+                name="description"
+                defaultValue={selected?.description}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="primary">
+                Cancel
+              </Button>
+              <Button type="submit" color="primary">
+                Save
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
       </Container>
     </Box>
   );

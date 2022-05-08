@@ -10,6 +10,7 @@ import { fetchTasks, createTask, updateTask } from '../api/task';
 interface TaskHookType {
   result: UseQueryResult<Task[]>;
   addTask: (title: string, description?: string) => void;
+  changeTask: (task: Task) => void;
   toggleTaskStatus: (task: Task) => void;
 }
 
@@ -17,11 +18,13 @@ export function useTask(): TaskHookType {
   const result = useQuery('tasks', fetchTasks);
 
   const queryClient = useQueryClient();
+
   const createMutation = useMutation(createTask, {
     onSuccess: () => {
       queryClient.invalidateQueries('tasks');
     },
   });
+
   const updateMutation = useMutation(updateTask, {
     onSuccess: () => {
       queryClient.invalidateQueries('tasks');
@@ -37,6 +40,10 @@ export function useTask(): TaskHookType {
     });
   };
 
+  const changeTask = (task: Task) => {
+    updateMutation.mutate(task);
+  };
+
   const toggleTaskStatus = (task: Task) => {
     let newStatus: TaskStatusType = 'DONE';
     if (task.status == 'DONE') {
@@ -46,5 +53,5 @@ export function useTask(): TaskHookType {
     updateMutation.mutate(newTask);
   };
 
-  return { result, addTask, toggleTaskStatus };
+  return { result, addTask, toggleTaskStatus, changeTask };
 }
