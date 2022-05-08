@@ -5,13 +5,14 @@ import {
   UseQueryResult,
 } from 'react-query';
 import Task, { TaskStatusType } from '../models/task';
-import { fetchTasks, createTask, updateTask } from '../api/task';
+import { fetchTasks, createTask, updateTask, deleteTask } from '../api/task';
 
 interface TaskHookType {
   result: UseQueryResult<Task[]>;
   addTask: (title: string, description?: string) => void;
   changeTask: (task: Task) => void;
   toggleTaskStatus: (task: Task) => void;
+  removeTask: (id: string) => void;
 }
 
 export function useTask(): TaskHookType {
@@ -24,8 +25,12 @@ export function useTask(): TaskHookType {
       queryClient.invalidateQueries('tasks');
     },
   });
-
   const updateMutation = useMutation(updateTask, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('tasks');
+    },
+  });
+  const deleteMutation = useMutation(deleteTask, {
     onSuccess: () => {
       queryClient.invalidateQueries('tasks');
     },
@@ -44,6 +49,10 @@ export function useTask(): TaskHookType {
     updateMutation.mutate(task);
   };
 
+  const removeTask = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
   const toggleTaskStatus = (task: Task) => {
     let newStatus: TaskStatusType = 'DONE';
     if (task.status == 'DONE') {
@@ -53,5 +62,5 @@ export function useTask(): TaskHookType {
     updateMutation.mutate(newTask);
   };
 
-  return { result, addTask, toggleTaskStatus, changeTask };
+  return { result, addTask, toggleTaskStatus, changeTask, removeTask };
 }

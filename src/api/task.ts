@@ -42,3 +42,11 @@ export async function updateTask(task: Task): Promise<Task> {
     throw err; // TODO: エラーハンドリング
   }
 }
+
+export async function deleteTask(id: string) {
+  try {
+    await client.delete(`/v1/tasks/${id}`);
+  } catch (err) {
+    throw err; // TODO: エラーハンドリング
+  }
+}

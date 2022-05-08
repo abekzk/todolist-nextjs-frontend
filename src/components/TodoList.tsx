@@ -24,7 +24,8 @@ import React, { useState } from 'react';
 import Task from '../models/task';
 
 const TodoList = () => {
-  const { result, addTask, toggleTaskStatus, changeTask } = useTask();
+  const { result, addTask, toggleTaskStatus, changeTask, removeTask } =
+    useTask();
   const task = result.data ?? [];
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Task>();
@@ -60,6 +61,10 @@ const TodoList = () => {
 
   const handleToggleStatus = (task: Task) => {
     toggleTaskStatus(task);
+  };
+
+  const handleDeleteTask = (task: Task) => {
+    removeTask(task.id);
   };
 
   const handleOpenUpdateDialog = (task: Task) => {
@@ -127,7 +132,11 @@ const TodoList = () => {
                 >
                   <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete" onClick={() => null}>
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => handleDeleteTask(task)}
+                >
                   <DeleteOutlineRoundedIcon />
                 </IconButton>
               </ListItemSecondaryAction>
