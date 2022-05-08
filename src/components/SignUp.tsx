@@ -1,3 +1,5 @@
+import { useAuth } from '../contexts/AuthContext';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Box,
   TextField,
@@ -7,9 +9,7 @@ import {
   Typography,
   Link as MULink,
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Link from 'next/link';
-import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/router';
 import React from 'react';
 
