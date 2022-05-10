@@ -5,7 +5,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-const Home: NextPage = () => {
+const IndexPage: NextPage = () => {
   const { auth } = useAuth();
   const router = useRouter();
 
@@ -24,4 +24,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default IndexPage;
