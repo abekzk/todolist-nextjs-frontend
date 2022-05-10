@@ -1,3 +1,4 @@
+import { useAuth } from '../contexts/AuthContext';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import {
   AppBar,
@@ -8,6 +9,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
 
 type Props = {
@@ -17,6 +19,8 @@ type Props = {
 
 const Layout = ({ children, title }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const router = useRouter();
+  const { signOut } = useAuth();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,6 +28,15 @@ const Layout = ({ children, title }: Props) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push('/signin');
+    } catch (err) {
+      setAnchorEl(null);
+    }
   };
 
   return (
@@ -76,7 +89,7 @@ const Layout = ({ children, title }: Props) => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>設定</MenuItem>
-              <MenuItem onClick={handleClose}>ログアウト</MenuItem>
+              <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
