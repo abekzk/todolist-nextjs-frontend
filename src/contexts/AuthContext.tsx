@@ -6,6 +6,7 @@ import Firebase, {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut as _signOut,
+  updateProfile as _updateProfile,
 } from 'firebase/auth';
 import {
   ReactNode,
@@ -36,6 +37,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  updateProfile: (name?: string, iconUrl?: string) => Promise<void>;
 }
 
 const AuthContext = createContext({} as AuthContextType);
@@ -81,6 +83,22 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
     }
   }
 
+  const updateProfile = async (name?: string, iconUrl?: string) => {
+    const firebaseAuth = getAuth();
+    const currentUser = firebaseAuth.currentUser;
+    if (!currentUser) {
+      return;
+    }
+    try {
+      await _updateProfile(currentUser, {
+        displayName: name,
+        photoURL: iconUrl,
+      });
+    } catch (err) {
+      // TODO: エラーハンドリング
+    }
+  };
+
   useEffect(() => {
     const firebaseAuth = getAuth();
     onAuthStateChanged(firebaseAuth, (user) => {
@@ -93,7 +111,9 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ auth, signUp, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ auth, signUp, signIn, signOut, updateProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -105,6 +125,7 @@ function convUser(_user: Firebase.UserInfo): User {
   const user: User = {
     name: _user.displayName ?? 'ユーザー',
     email: _user.email ?? '',
+    iconUrl: _user.photoURL,
   };
   return user;
 }

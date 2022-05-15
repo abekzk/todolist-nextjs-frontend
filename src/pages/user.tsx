@@ -1,11 +1,11 @@
+import AccountSettings from '../components/AccountSettings';
 import Layout from '../components/Layout';
-import TodoList from '../components/TodoList';
 import { useAuth } from '../contexts/AuthContext';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-const IndexPage: NextPage = () => {
+const UserPage: NextPage = () => {
   const { auth } = useAuth();
   const router = useRouter();
 
@@ -16,12 +16,12 @@ const IndexPage: NextPage = () => {
   });
 
   return (
-    <Layout title="Todolist App">
+    <Layout title="ユーザープロフィール">
       <main>
-        <TodoList />
+        <AccountSettings />
       </main>
     </Layout>
   );
 };
 
-export default IndexPage;
+export default UserPage;
