@@ -18,7 +18,7 @@ type Props = {
 };
 
 const Layout = ({ children, title }: Props) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // TODO: ここの処理の理解
   const router = useRouter();
   const { signOut } = useAuth();
 
@@ -28,6 +28,10 @@ const Layout = ({ children, title }: Props) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClickProfile = () => {
+    router.push('/user');
   };
 
   const handleLogout = async () => {
@@ -88,7 +92,7 @@ const Layout = ({ children, title }: Props) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>設定</MenuItem>
+              <MenuItem onClick={handleClickProfile}>設定</MenuItem>
               <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
             </Menu>
           </Toolbar>
