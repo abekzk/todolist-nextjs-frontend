@@ -17,7 +17,7 @@ import {
 } from 'react';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
+  apiKey: 'AIzaSyBklRSTulAxQtb9_6jFzw__jZ3tuJh7qqQ',
   authDomain: 'todolist-89bb8.firebaseapp.com',
   projectId: 'todolist-89bb8',
   storageBucket: 'todolist-89bb8.appspot.com',
