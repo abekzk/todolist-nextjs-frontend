@@ -1,10 +1,11 @@
+import { API_URL } from '../configs/config';
 import Task from '../models/task';
 import { setTokenInterceptor } from './interceptor';
 import { ResTask, resToTask, taskToBody } from './response';
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: API_URL,
 });
 
 client.interceptors.request.use(setTokenInterceptor);
