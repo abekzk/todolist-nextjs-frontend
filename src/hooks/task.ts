@@ -1,5 +1,10 @@
-import { fetchTasks, createTask, updateTask, deleteTask } from '../api/task';
 import Task, { TaskStatusType } from '../models/task';
+import {
+  fetchTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+} from '../services/api/task';
 import {
   useQuery,
   useMutation,

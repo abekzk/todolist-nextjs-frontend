@@ -1,5 +1,5 @@
-import { API_URL } from '../configs/config';
-import Task from '../models/task';
+import { API_URL } from '../../configs/config';
+import Task from '../../models/task';
 import { setTokenInterceptor } from './interceptor';
 import { ResTask, resToTask, taskToBody } from './response';
 import axios from 'axios';

@@ -1,4 +1,4 @@
-import Task, { TaskStatusType } from '../models/task';
+import Task, { TaskStatusType } from '../../models/task';
 
 export interface ResTask {
   id: string;
