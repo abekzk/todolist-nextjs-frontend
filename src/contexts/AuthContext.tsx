@@ -1,14 +1,11 @@
-import { FIREBASE_CONFIG } from '../configs/config';
 import User from '../models/user';
-import { initializeApp } from 'firebase/app';
-import Firebase, {
-  getAuth,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut as _signOut,
-  updateProfile as _updateProfile,
-} from 'firebase/auth';
+import {
+  getUser,
+  loginUser,
+  logoutUser,
+  createUser,
+  updateUser,
+} from '../services/firebase/firebase';
 import {
   ReactNode,
   useContext,
@@ -16,8 +13,6 @@ import {
   createContext,
   useState,
 } from 'react';
-
-initializeApp(FIREBASE_CONFIG);
 
 interface AuthState {
   user?: User | null;
@@ -37,37 +32,26 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   const [auth, setAuth] = useState<AuthState>({});
 
   async function signUp(email: string, password: string) {
-    const firebaseAuth = getAuth();
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        firebaseAuth,
-        email,
-        password
-      );
-      setAuth({ user: convUser(userCredential.user) });
+      const user = await createUser(email, password);
+      setAuth({ user: user });
     } catch (err) {
       // TODO: エラーハンドリング
     }
   }
 
   async function signIn(email: string, password: string) {
-    const firebaseAuth = getAuth();
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        firebaseAuth,
-        email,
-        password
-      );
-      setAuth({ user: convUser(userCredential.user) });
+      const user = await loginUser(email, password);
+      setAuth({ user: user });
     } catch (err) {
       // TODO: エラーハンドリング
     }
   }
 
   async function signOut() {
-    const firebaseAuth = getAuth();
     try {
-      await _signOut(firebaseAuth);
+      await logoutUser();
       setAuth({ user: null });
     } catch (err) {
       // TODO: エラーハンドリング
@@ -75,30 +59,23 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   }
 
   const updateProfile = async (name?: string, iconUrl?: string) => {
-    const firebaseAuth = getAuth();
-    const currentUser = firebaseAuth.currentUser;
-    if (!currentUser) {
-      return;
-    }
     try {
-      await _updateProfile(currentUser, {
-        displayName: name,
-        photoURL: iconUrl,
-      });
+      const user = await updateUser(name, iconUrl);
+      setAuth({ user: user });
     } catch (err) {
       // TODO: エラーハンドリング
     }
   };
 
   useEffect(() => {
-    const firebaseAuth = getAuth();
-    onAuthStateChanged(firebaseAuth, (user) => {
-      if (user) {
-        setAuth({ user: convUser(user) });
-      } else {
+    (async () => {
+      try {
+        const user = await getUser();
+        setAuth({ user: user });
+      } catch (err) {
         setAuth({ user: null });
       }
-    });
+    })();
   }, []);
 
   return (
@@ -111,12 +88,3 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-function convUser(_user: Firebase.UserInfo): User {
-  const user: User = {
-    name: _user.displayName ?? 'ユーザー',
-    email: _user.email ?? '',
-    iconUrl: _user.photoURL,
-  };
-  return user;
-}
