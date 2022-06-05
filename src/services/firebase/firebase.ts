@@ -24,12 +24,12 @@ function toModelUser(_user: Firebase.UserInfo): User {
 // Auth情報取得
 async function getFirebaseAuthUser(): Promise<Firebase.User> {
   const auth = getAuth();
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         resolve(user);
       }
-      // TODO: エラーハンドリング
+      reject(new Error('No Login')); // TODO: エラー修正
     });
   });
 }
