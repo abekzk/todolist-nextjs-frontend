@@ -24,9 +24,8 @@ import {
 import React, { useState } from 'react';
 
 const TodoList = () => {
-  const { result, addTask, toggleTaskStatus, changeTask, removeTask } =
+  const { tasks, addTask, toggleTaskStatus, changeTask, removeTask } =
     useTask();
-  const task = result.data ?? [];
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Task>();
 
@@ -105,7 +104,7 @@ const TodoList = () => {
       </Container>
       <Container sx={{ py: 8 }} maxWidth="md">
         <List dense={true}>
-          {task.map((task) => (
+          {tasks.map((task) => (
             <ListItem key={task.id}>
               <ListItemIcon>
                 <Checkbox
