@@ -31,7 +31,7 @@ const Layout = ({ children, title }: Props) => {
   };
 
   const handleClickProfile = () => {
-    router.push('/user');
+    router.push('/settings');
   };
 
   const handleLogout = async () => {
