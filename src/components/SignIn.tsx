@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Box,

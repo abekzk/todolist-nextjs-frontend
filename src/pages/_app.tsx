@@ -1,4 +1,4 @@
-import { AuthProvider } from '../contexts/AuthContext';
+import { AuthProvider } from '../providers/AuthProvider';
 import theme from '../styles/theme';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';

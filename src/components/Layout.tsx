@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import {
   AppBar,
