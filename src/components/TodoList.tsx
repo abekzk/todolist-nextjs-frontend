@@ -22,22 +22,32 @@ import {
   DialogActions,
 } from '@mui/material';
 import React, { useState } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
+type TaskAddFormInputs = {
+  title: string;
+};
 
 const TodoList = () => {
   const { tasks, addTask, toggleTaskStatus, changeTask, removeTask } =
     useTask();
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Task>();
+  const [open, setOpen] = useState(false); // タスク更新モーダルのstate
+  const [selected, setSelected] = useState<Task>(); // 更新対象のタスクのstate
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors: addFormError },
+  } = useForm<TaskAddFormInputs>();
 
-  function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const title = data.get('title');
-    if (typeof title != 'string') {
-      return;
+  const handleAddTask: SubmitHandler<TaskAddFormInputs> = async (data) => {
+    try {
+      addTask(data.title);
+      reset();
+    } catch {
+      // TODO: エラーハンドリング
     }
-    addTask(title);
-  }
+  };
 
   const handleUpdateTask = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,16 +89,25 @@ const TodoList = () => {
   return (
     <Box>
       <Container sx={{ pt: 4 }} maxWidth="sm">
-        <form noValidate onSubmit={handleAddTask}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="title"
-            label="タスクを入力"
+        <form onSubmit={handleSubmit(handleAddTask)} noValidate>
+          <Controller
             name="title"
-            autoFocus
+            control={control}
+            rules={{ required: true }}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={addFormError.title && true}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                required
+                label="タスクを入力"
+                helperText={addFormError.title && 'タスク名を入力してください'}
+                autoFocus
+              />
+            )}
           />
 
           <Button
