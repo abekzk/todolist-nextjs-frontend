@@ -28,6 +28,11 @@ type FormInputsTaskAdd = {
   title: string;
 };
 
+type FormInputsTaskUpdate = {
+  title: string;
+  description: string;
+};
+
 const TodoList = () => {
   const { tasks, addTask, toggleTaskStatus, changeTask, removeTask } =
     useTask();
@@ -39,6 +44,13 @@ const TodoList = () => {
     reset: resetTaskAdd,
     formState: { errors: formErrorsTaskAdd },
   } = useForm<FormInputsTaskAdd>();
+
+  const {
+    handleSubmit: handleSubmitTaskUpdate,
+    control: controlTaskUpadate,
+    reset: resetTaskUpdate,
+    formState: { errors: formErrorsTaskUpdate },
+  } = useForm<FormInputsTaskUpdate>();
 
   const handleAddTask: SubmitHandler<FormInputsTaskAdd> = async (data) => {
     try {
