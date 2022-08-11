@@ -44,11 +44,11 @@ const TodoList = () => {
     reset: resetTaskAdd,
     formState: { errors: formErrorsTaskAdd },
   } = useForm<FormInputsTaskAdd>();
-
   const {
     handleSubmit: handleSubmitTaskUpdate,
     control: controlTaskUpadate,
     reset: resetTaskUpdate,
+    setValue: setValueTaskUpdate,
     formState: { errors: formErrorsTaskUpdate },
   } = useForm<FormInputsTaskUpdate>();
 
@@ -61,23 +61,25 @@ const TodoList = () => {
     }
   };
 
-  const handleUpdateTask = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const data = new FormData(e.currentTarget);
-    const title = data.get('title');
-    const description = data.get('description');
-    if (typeof title != 'string' || typeof description != 'string') {
-      return;
+  const handleUpdateTask: SubmitHandler<FormInputsTaskUpdate> = async (
+    data
+  ) => {
+    try {
+      if (!selected) {
+        return;
+      }
+      const task: Task = {
+        ...selected,
+        title: data.title,
+        description: data.description,
+      };
+      await changeTask(task);
+      setOpen(false);
+      setSelected(undefined);
+      resetTaskUpdate();
+    } catch {
+      // TODO: エラーハンドリング
     }
-
-    if (!selected) {
-      return;
-    }
-    const update: Task = { ...selected, title, description };
-    changeTask(update);
-    setOpen(false);
-    setSelected(undefined);
   };
 
   const handleToggleStatus = (task: Task) => {
@@ -91,11 +93,14 @@ const TodoList = () => {
   const handleOpenUpdateDialog = (task: Task) => {
     setOpen(true);
     setSelected(task);
+    setValueTaskUpdate('title', task.title);
+    setValueTaskUpdate('description', task.description);
   };
 
   const handleCloseDialog = () => {
     setOpen(false);
     setSelected(undefined);
+    resetTaskUpdate();
   };
 
   return (
@@ -176,25 +181,41 @@ const TodoList = () => {
           ))}
         </List>
         <Dialog open={open} onClose={handleCloseDialog}>
-          <form noValidate onSubmit={handleUpdateTask}>
+          <form noValidate onSubmit={handleSubmitTaskUpdate(handleUpdateTask)}>
             <DialogContent>
-              <TextField
-                autoFocus
-                margin="normal"
-                label="タスク名"
-                type="text"
-                fullWidth
+              <Controller
                 name="title"
-                defaultValue={selected?.title}
+                control={controlTaskUpadate}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    required
+                    margin="normal"
+                    label="タスク名"
+                    type="text"
+                    fullWidth
+                    error={formErrorsTaskUpdate.title && true}
+                    helperText={
+                      formErrorsTaskUpdate.title && 'タスク名を入力してください'
+                    }
+                  />
+                )}
               />
-              <TextField
-                autoFocus
-                margin="normal"
-                label="詳細"
-                type="text"
-                fullWidth
+              <Controller
                 name="description"
-                defaultValue={selected?.description}
+                control={controlTaskUpadate}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    margin="normal"
+                    label="詳細"
+                    type="text"
+                    fullWidth
+                  />
+                )}
               />
             </DialogContent>
             <DialogActions>
