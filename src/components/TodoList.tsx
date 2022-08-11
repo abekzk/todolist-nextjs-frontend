@@ -21,7 +21,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 type FormInputsTaskAdd = {
