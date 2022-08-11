@@ -24,7 +24,7 @@ import {
 import React, { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-type TaskAddFormInputs = {
+type FormInputsTaskAdd = {
   title: string;
 };
 
@@ -34,16 +34,16 @@ const TodoList = () => {
   const [open, setOpen] = useState(false); // タスク更新モーダルのstate
   const [selected, setSelected] = useState<Task>(); // 更新対象のタスクのstate
   const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors: addFormError },
-  } = useForm<TaskAddFormInputs>();
+    handleSubmit: handleSubmitTaskAdd,
+    control: controlTaskAdd,
+    reset: resetTaskAdd,
+    formState: { errors: formErrorsTaskAdd },
+  } = useForm<FormInputsTaskAdd>();
 
-  const handleAddTask: SubmitHandler<TaskAddFormInputs> = async (data) => {
+  const handleAddTask: SubmitHandler<FormInputsTaskAdd> = async (data) => {
     try {
       addTask(data.title);
-      reset();
+      resetTaskAdd();
     } catch {
       // TODO: エラーハンドリング
     }
@@ -89,22 +89,24 @@ const TodoList = () => {
   return (
     <Box>
       <Container sx={{ pt: 4 }} maxWidth="sm">
-        <form onSubmit={handleSubmit(handleAddTask)} noValidate>
+        <form onSubmit={handleSubmitTaskAdd(handleAddTask)} noValidate>
           <Controller
             name="title"
-            control={control}
+            control={controlTaskAdd}
             rules={{ required: true }}
             defaultValue=""
             render={({ field }) => (
               <TextField
                 {...field}
-                error={addFormError.title && true}
+                error={formErrorsTaskAdd.title && true}
                 variant="outlined"
                 margin="normal"
                 fullWidth
                 required
                 label="タスクを入力"
-                helperText={addFormError.title && 'タスク名を入力してください'}
+                helperText={
+                  formErrorsTaskAdd.title && 'タスク名を入力してください'
+                }
                 autoFocus
               />
             )}
