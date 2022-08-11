@@ -11,27 +11,30 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
+type FormInputs = {
+  email: string;
+  password: string;
+};
 
 const SignIn = () => {
   const { signIn } = useAuth();
   const router = useRouter();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors: formErrors },
+  } = useForm<FormInputs>();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
-    if (typeof email != 'string' || typeof password != 'string') {
-      return;
-    }
-
+  const handleSignIn: SubmitHandler<FormInputs> = async (data) => {
     try {
-      await signIn(email, password);
+      await signIn(data.email, data.password);
       router.push('/');
     } catch (err) {
       // TODO: エラーハンドリング
     }
-  }
+  };
 
   return (
     <Box
@@ -48,35 +51,55 @@ const SignIn = () => {
       <Typography component="h1" variant="h5">
         Sign in
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="メールアドレス"
-          name="email"
-          autoComplete="email"
-          autoFocus
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="パスワード"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
-          ログイン
-        </Button>
+      <Box sx={{ mt: 1 }}>
+        <form noValidate onSubmit={handleSubmit(handleSignIn)}>
+          <Controller
+            name="email"
+            control={control}
+            rules={{ required: true }}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                required
+                fullWidth
+                label="メールアドレス"
+                autoComplete="email"
+                autoFocus
+                error={formErrors.email && true}
+                helperText={formErrors.email && 'メールアドレスは必須です'}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: true }}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                required
+                fullWidth
+                label="パスワード"
+                type="password"
+                autoComplete="current-password"
+                error={formErrors.password && true}
+                helperText={formErrors.password && 'パスワードは必須です'}
+              />
+            )}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            ログイン
+          </Button>
+        </form>
         <Grid container>
           <Grid item>
             <Link href="/signup" passHref>
