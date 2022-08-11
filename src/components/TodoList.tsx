@@ -54,7 +54,7 @@ const TodoList = () => {
 
   const handleAddTask: SubmitHandler<FormInputsTaskAdd> = async (data) => {
     try {
-      addTask(data.title);
+      await addTask(data.title);
       resetTaskAdd();
     } catch {
       // TODO: エラーハンドリング
@@ -82,12 +82,20 @@ const TodoList = () => {
     }
   };
 
-  const handleToggleStatus = (task: Task) => {
-    toggleTaskStatus(task);
+  const handleToggleStatus = async (task: Task) => {
+    try {
+      await toggleTaskStatus(task);
+    } catch {
+      // TODO: エラーハンドリング
+    }
   };
 
-  const handleDeleteTask = (task: Task) => {
-    removeTask(task.id);
+  const handleDeleteTask = async (task: Task) => {
+    try {
+      await removeTask(task.id);
+    } catch {
+      // TODO: エラーハンドリング
+    }
   };
 
   const handleOpenUpdateDialog = (task: Task) => {
