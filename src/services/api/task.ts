@@ -10,10 +10,15 @@ const client = axios.create({
 
 client.interceptors.request.use(setTokenInterceptor);
 
-export async function fetchTasks(): Promise<Task[]> {
+export type TaskFetchParams = {
+  sort?: 'created_at' | '-created_at';
+};
+
+export async function fetchTasks(p: TaskFetchParams): Promise<Task[]> {
   try {
     // Call
-    const res = await client.get<TaskDTO[]>('/v1/tasks');
+    const params = { sort: p.sort };
+    const res = await client.get<TaskDTO[]>('/v1/tasks', { params });
 
     const tasks = res.data.map((resTask) => {
       return toModelTask(resTask);

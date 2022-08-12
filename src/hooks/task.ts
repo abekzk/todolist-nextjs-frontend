@@ -4,6 +4,7 @@ import {
   createTask,
   updateTask,
   deleteTask,
+  TaskFetchParams,
 } from '../services/api/task';
 import useSWR from 'swr';
 
@@ -18,7 +19,8 @@ interface TaskHooks {
 }
 
 export function useTask(): TaskHooks {
-  const { data, error, mutate } = useSWR('/v1/tasks', fetchTasks);
+  const params: TaskFetchParams = { sort: '-created_at' };
+  const { data, error, mutate } = useSWR(params, fetchTasks);
 
   const addTask = async (title: string) => {
     try {
