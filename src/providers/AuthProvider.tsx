@@ -4,7 +4,6 @@ import {
   loginUser,
   logoutUser,
   createUser,
-  updateUser,
 } from '../services/firebase/firebase';
 import {
   ReactNode,
@@ -23,7 +22,6 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  updateProfile: (name?: string, iconUrl?: string) => Promise<void>;
 }
 
 const AuthContext = createContext({} as AuthContextType);
@@ -58,15 +56,6 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
     }
   }
 
-  const updateProfile = async (name?: string, iconUrl?: string) => {
-    try {
-      const user = await updateUser(name, iconUrl);
-      setAuth({ user: user });
-    } catch (err) {
-      // TODO: エラーハンドリング
-    }
-  };
-
   useEffect(() => {
     (async () => {
       try {
@@ -79,9 +68,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ auth, signUp, signIn, signOut, updateProfile }}
-    >
+    <AuthContext.Provider value={{ auth, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

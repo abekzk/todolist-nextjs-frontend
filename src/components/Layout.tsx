@@ -30,10 +30,6 @@ const Layout = ({ children, title }: Props) => {
     setAnchorEl(null);
   };
 
-  const handleClickProfile = () => {
-    router.push('/settings');
-  };
-
   const handleLogout = async () => {
     try {
       await signOut();
@@ -92,7 +88,6 @@ const Layout = ({ children, title }: Props) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClickProfile}>設定</MenuItem>
               <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
             </Menu>
           </Toolbar>
