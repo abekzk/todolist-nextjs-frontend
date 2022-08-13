@@ -7,6 +7,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Divider,
 } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -20,7 +21,7 @@ type Props = {
 const Layout = ({ children, title }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // TODO: ここの処理の理解
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { auth, signOut } = useAuth();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -77,7 +78,7 @@ const Layout = ({ children, title }: Props) => {
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
-                vertical: 'top',
+                vertical: 'bottom',
                 horizontal: 'right',
               }}
               keepMounted
@@ -85,10 +86,42 @@ const Layout = ({ children, title }: Props) => {
                 vertical: 'top',
                 horizontal: 'right',
               }}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: 'visible',
+                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                  mt: 1.5,
+                  '& .MuiAvatar-root': {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1,
+                  },
+                  '&:before': {
+                    content: '""',
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: 'background.paper',
+                    transform: 'translateY(-50%) rotate(45deg)',
+                    zIndex: 0,
+                  },
+                },
+              }}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
+              <MenuItem dense style={{ pointerEvents: 'none' }}>
+                {auth.user?.email}
+              </MenuItem>
+              <Divider />
+              <MenuItem dense onClick={handleLogout}>
+                ログアウト
+              </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
