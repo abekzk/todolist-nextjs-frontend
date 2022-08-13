@@ -7,16 +7,13 @@ import Firebase, {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile,
 } from 'firebase/auth';
 
 initializeApp(FIREBASE_CONFIG);
 
 function toModelUser(_user: Firebase.UserInfo): User {
   const user: User = {
-    name: _user.displayName ?? 'ユーザー',
     email: _user.email ?? '',
-    iconUrl: _user.photoURL,
   };
   return user;
 }
@@ -98,23 +95,5 @@ export async function createUser(
     return toModelUser(userCredential.user);
   } catch (err) {
     throw new Error('createUser Error'); // TODO: エラー修正
-  }
-}
-
-// ユーザー更新
-export async function updateUser(
-  name?: string,
-  iconUrl?: string
-): Promise<User> {
-  try {
-    const currentUser = await getFirebaseAuthUser();
-    await updateProfile(currentUser, {
-      displayName: name,
-      photoURL: iconUrl,
-    });
-    const updatedUser = await getFirebaseAuthUser();
-    return toModelUser(updatedUser);
-  } catch (err) {
-    throw new Error('updateUser Error'); // TODO: エラー修正
   }
 }
