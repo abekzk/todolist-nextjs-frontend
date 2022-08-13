@@ -1,4 +1,5 @@
 import { useAuth } from '../providers/AuthProvider';
+import ErrorToast from './ErrorToast';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Box,
@@ -11,6 +12,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 type FormInputs = {
@@ -26,13 +28,16 @@ const SignIn = () => {
     control,
     formState: { errors: formErrors },
   } = useForm<FormInputs>();
+  const [open, setOpen] = useState(false); // エラートースト表示表のstate
+  const [errMessage, setErrMessage] = useState('');
 
   const handleSignIn: SubmitHandler<FormInputs> = async (data) => {
     try {
       await signIn(data.email, data.password);
       router.push('/');
-    } catch (err) {
-      // TODO: エラーハンドリング
+    } catch {
+      setOpen(true);
+      setErrMessage('ログインに失敗しました');
     }
   };
 
@@ -108,6 +113,7 @@ const SignIn = () => {
           </Grid>
         </Grid>
       </Box>
+      <ErrorToast {...{ open, setOpen, message: errMessage }} />
     </Box>
   );
 };
