@@ -155,7 +155,7 @@ const TodoList = () => {
           </Button>
         </form>
       </Container>
-      <Container sx={{ py: 8 }} maxWidth="md">
+      <Container sx={{ py: 4 }} maxWidth="md">
         <List dense={true}>
           {tasks.map((task) => (
             <ListItem key={task.id}>
