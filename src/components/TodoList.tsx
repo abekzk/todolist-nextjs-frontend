@@ -1,5 +1,6 @@
 import { useTask } from '../hooks/task';
 import Task from '../models/task';
+import ErrorToast from './ErrorToast';
 import {
   DeleteOutlineRounded as DeleteOutlineRoundedIcon,
   Edit as EditIcon,
@@ -38,6 +39,8 @@ const TodoList = () => {
     useTask();
   const [open, setOpen] = useState(false); // タスク更新モーダルのstate
   const [selected, setSelected] = useState<Task>(); // 更新対象のタスクのstate
+  const [openErrToast, setOpenErrToast] = useState(false); // エラートースト表示表のstate
+  const [errMessage, setErrMessage] = useState('');
   const {
     handleSubmit: handleSubmitTaskAdd,
     control: controlTaskAdd,
@@ -57,7 +60,8 @@ const TodoList = () => {
       await addTask(data.title);
       resetTaskAdd();
     } catch {
-      // TODO: エラーハンドリング
+      setOpenErrToast(true);
+      setErrMessage('タスクの追加に失敗しました');
     }
   };
 
@@ -78,7 +82,8 @@ const TodoList = () => {
       setSelected(undefined);
       resetTaskUpdate();
     } catch {
-      // TODO: エラーハンドリング
+      setOpenErrToast(true);
+      setErrMessage('タスクの更新に失敗しました');
     }
   };
 
@@ -86,7 +91,8 @@ const TodoList = () => {
     try {
       await toggleTaskStatus(task);
     } catch {
-      // TODO: エラーハンドリング
+      setOpenErrToast(true);
+      setErrMessage('タスクの更新に失敗しました');
     }
   };
 
@@ -94,7 +100,8 @@ const TodoList = () => {
     try {
       await removeTask(task.id);
     } catch {
-      // TODO: エラーハンドリング
+      setOpenErrToast(true);
+      setErrMessage('タスクの削除に失敗しました');
     }
   };
 
@@ -148,7 +155,7 @@ const TodoList = () => {
           </Button>
         </form>
       </Container>
-      <Container sx={{ py: 8 }} maxWidth="md">
+      <Container sx={{ py: 4 }} maxWidth="md">
         <List dense={true}>
           {tasks.map((task) => (
             <ListItem key={task.id}>
@@ -237,6 +244,13 @@ const TodoList = () => {
           </form>
         </Dialog>
       </Container>
+      <ErrorToast
+        {...{
+          open: openErrToast,
+          setOpen: setOpenErrToast,
+          message: errMessage,
+        }}
+      />
     </Box>
   );
 };

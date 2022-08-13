@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       const user = await createUser(email, password);
       setAuth({ user: user });
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   }
 
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       const user = await loginUser(email, password);
       setAuth({ user: user });
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   }
 
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children?: ReactNode }) => {
       await logoutUser();
       setAuth({ user: null });
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   }
 

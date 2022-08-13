@@ -33,7 +33,7 @@ export function useTask(): TaskHooks {
       await createTask(task);
       mutate();
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   };
 
@@ -42,7 +42,7 @@ export function useTask(): TaskHooks {
       await updateTask(task);
       mutate();
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   };
 
@@ -51,7 +51,7 @@ export function useTask(): TaskHooks {
       await deleteTask(id);
       mutate();
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   };
 
@@ -64,7 +64,7 @@ export function useTask(): TaskHooks {
       await updateTask({ ...task, status: newStatus });
       mutate();
     } catch (err) {
-      // TODO: エラーハンドリング
+      throw err;
     }
   };
 
