@@ -7,6 +7,6 @@ export async function setTokenInterceptor(config: AxiosRequestConfig) {
     config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
     return config;
   } catch (err) {
-    throw new Error('No token'); // TODO: エラー処理修正
+    throw err;
   }
 }

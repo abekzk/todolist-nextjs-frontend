@@ -26,7 +26,7 @@ async function getFirebaseAuthUser(): Promise<Firebase.User> {
       if (user) {
         resolve(user);
       }
-      reject(new Error('No Login')); // TODO: エラー修正
+      reject(new Error('No Login'));
     });
   });
 }
@@ -37,7 +37,7 @@ export async function getUser(): Promise<User> {
     const user = await getFirebaseAuthUser();
     return toModelUser(user);
   } catch (err) {
-    throw new Error('getUser Error'); // TODO: エラー修正
+    throw new Error('getUser Error');
   }
 }
 
@@ -48,7 +48,7 @@ export async function getToken(): Promise<string> {
     const token = await user.getIdToken();
     return token;
   } catch (err) {
-    throw new Error('getToken Error'); // TODO: エラー修正
+    throw new Error('getToken Error');
   }
 }
 
@@ -66,7 +66,7 @@ export async function loginUser(
     );
     return toModelUser(userCredential.user);
   } catch (err) {
-    throw new Error('loginUser Error'); // TODO: エラー修正
+    throw new Error('loginUser Error');
   }
 }
 
@@ -76,7 +76,7 @@ export async function logoutUser() {
   try {
     await signOut(auth);
   } catch (err) {
-    // TODO: エラーハンドリング
+    throw new Error('logoutUser Error');
   }
 }
 
@@ -94,6 +94,6 @@ export async function createUser(
     );
     return toModelUser(userCredential.user);
   } catch (err) {
-    throw new Error('createUser Error'); // TODO: エラー修正
+    throw new Error('createUser Error');
   }
 }
