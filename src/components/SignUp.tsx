@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Box,
@@ -11,29 +11,30 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
+type FormInputs = {
+  email: string;
+  password: string;
+};
 
 const SignUp = () => {
   const { signUp } = useAuth();
   const router = useRouter();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors: formErrors },
+  } = useForm<FormInputs>();
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
-
-    if (typeof email != 'string' || typeof password != 'string') {
-      return;
-    }
-
+  const handleSignUp: SubmitHandler<FormInputs> = async (data) => {
     try {
-      await signUp(email, password);
+      await signUp(data.email, data.password);
       router.push('/');
     } catch (err) {
       // TODO: エラーハンドリング
     }
-  }
+  };
 
   return (
     <Box
@@ -50,39 +51,59 @@ const SignUp = () => {
       <Typography component="h1" variant="h5">
         Sign up
       </Typography>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              autoFocus
-              required
-              fullWidth
-              id="email"
-              label="メールアドレス"
-              name="email"
-              autoComplete="email"
-            />
+      <Box sx={{ mt: 3 }}>
+        <form noValidate onSubmit={handleSubmit(handleSignUp)}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Controller
+                name="email"
+                control={control}
+                rules={{ required: true }}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    required
+                    fullWidth
+                    label="メールアドレス"
+                    autoComplete="email"
+                    error={formErrors.email && true}
+                    helperText={formErrors.email && 'メールアドレスは必須です'}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="password"
+                control={control}
+                rules={{ required: true }}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    required
+                    fullWidth
+                    label="パスワード"
+                    type="password"
+                    autoComplete="new-password"
+                    error={formErrors.password && true}
+                    helperText={formErrors.password && 'パスワードは必須です'}
+                  />
+                )}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="password"
-              label="パスワード"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-            />
-          </Grid>
-        </Grid>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
-          アカウント作成
-        </Button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            アカウント作成
+          </Button>
+        </form>
         <Grid container justifyContent="flex-end">
           <Grid item>
             <Link href="/signin" passHref>

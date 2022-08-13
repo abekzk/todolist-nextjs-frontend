@@ -1,66 +1,80 @@
-import { fetchTasks, createTask, updateTask, deleteTask } from '../api/task';
 import Task, { TaskStatusType } from '../models/task';
 import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryResult,
-} from 'react-query';
+  fetchTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  TaskFetchParams,
+} from '../services/api/task';
+import useSWR from 'swr';
 
-interface TaskHookType {
-  result: UseQueryResult<Task[]>;
-  addTask: (title: string, description?: string) => void;
-  changeTask: (task: Task) => void;
-  toggleTaskStatus: (task: Task) => void;
-  removeTask: (id: string) => void;
+interface TaskHooks {
+  tasks: Task[];
+  isLoading: boolean;
+  isError: unknown;
+  addTask: (title: string, description?: string) => Promise<void>;
+  changeTask: (task: Task) => Promise<void>;
+  toggleTaskStatus: (task: Task) => Promise<void>;
+  removeTask: (id: string) => Promise<void>;
 }
 
-export function useTask(): TaskHookType {
-  const result = useQuery('tasks', fetchTasks);
+export function useTask(): TaskHooks {
+  const params: TaskFetchParams = { sort: '-created_at' };
+  const { data, error, mutate } = useSWR(params, fetchTasks);
 
-  const queryClient = useQueryClient();
-
-  const createMutation = useMutation(createTask, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('tasks');
-    },
-  });
-  const updateMutation = useMutation(updateTask, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('tasks');
-    },
-  });
-  const deleteMutation = useMutation(deleteTask, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('tasks');
-    },
-  });
-
-  const addTask = (title: string, description?: string) => {
-    createMutation.mutate({
-      id: '',
-      title: title,
-      description: description ?? '',
-      status: 'TODO',
-    });
-  };
-
-  const changeTask = (task: Task) => {
-    updateMutation.mutate(task);
-  };
-
-  const removeTask = (id: string) => {
-    deleteMutation.mutate(id);
-  };
-
-  const toggleTaskStatus = (task: Task) => {
-    let newStatus: TaskStatusType = 'DONE';
-    if (task.status == 'DONE') {
-      newStatus = 'TODO';
+  const addTask = async (title: string) => {
+    try {
+      const task: Task = {
+        id: '',
+        title: title,
+        description: '',
+        status: 'TODO',
+      };
+      await createTask(task);
+      mutate();
+    } catch (err) {
+      // TODO: エラーハンドリング
     }
-    const newTask = { ...task, status: newStatus };
-    updateMutation.mutate(newTask);
   };
 
-  return { result, addTask, toggleTaskStatus, changeTask, removeTask };
+  const changeTask = async (task: Task) => {
+    try {
+      await updateTask(task);
+      mutate();
+    } catch (err) {
+      // TODO: エラーハンドリング
+    }
+  };
+
+  const removeTask = async (id: string) => {
+    try {
+      await deleteTask(id);
+      mutate();
+    } catch (err) {
+      // TODO: エラーハンドリング
+    }
+  };
+
+  const toggleTaskStatus = async (task: Task) => {
+    try {
+      let newStatus: TaskStatusType = 'DONE';
+      if (task.status == 'DONE') {
+        newStatus = 'TODO';
+      }
+      await updateTask({ ...task, status: newStatus });
+      mutate();
+    } catch (err) {
+      // TODO: エラーハンドリング
+    }
+  };
+
+  return {
+    tasks: data ?? [],
+    isLoading: !error && !data,
+    isError: error,
+    addTask,
+    toggleTaskStatus,
+    changeTask,
+    removeTask,
+  };
 }

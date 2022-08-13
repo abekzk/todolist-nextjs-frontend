@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import {
   AppBar,
@@ -28,10 +28,6 @@ const Layout = ({ children, title }: Props) => {
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleClickProfile = () => {
-    router.push('/user');
   };
 
   const handleLogout = async () => {
@@ -92,7 +88,6 @@ const Layout = ({ children, title }: Props) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClickProfile}>設定</MenuItem>
               <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
             </Menu>
           </Toolbar>

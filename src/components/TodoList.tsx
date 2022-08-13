@@ -21,75 +21,120 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
+type FormInputsTaskAdd = {
+  title: string;
+};
+
+type FormInputsTaskUpdate = {
+  title: string;
+  description: string;
+};
 
 const TodoList = () => {
-  const { result, addTask, toggleTaskStatus, changeTask, removeTask } =
+  const { tasks, addTask, toggleTaskStatus, changeTask, removeTask } =
     useTask();
-  const task = result.data ?? [];
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Task>();
+  const [open, setOpen] = useState(false); // タスク更新モーダルのstate
+  const [selected, setSelected] = useState<Task>(); // 更新対象のタスクのstate
+  const {
+    handleSubmit: handleSubmitTaskAdd,
+    control: controlTaskAdd,
+    reset: resetTaskAdd,
+    formState: { errors: formErrorsTaskAdd },
+  } = useForm<FormInputsTaskAdd>();
+  const {
+    handleSubmit: handleSubmitTaskUpdate,
+    control: controlTaskUpadate,
+    reset: resetTaskUpdate,
+    setValue: setValueTaskUpdate,
+    formState: { errors: formErrorsTaskUpdate },
+  } = useForm<FormInputsTaskUpdate>();
 
-  function handleAddTask(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const title = data.get('title');
-    if (typeof title != 'string') {
-      return;
+  const handleAddTask: SubmitHandler<FormInputsTaskAdd> = async (data) => {
+    try {
+      await addTask(data.title);
+      resetTaskAdd();
+    } catch {
+      // TODO: エラーハンドリング
     }
-    addTask(title);
-  }
-
-  const handleUpdateTask = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const data = new FormData(e.currentTarget);
-    const title = data.get('title');
-    const description = data.get('description');
-    if (typeof title != 'string' || typeof description != 'string') {
-      return;
-    }
-
-    if (!selected) {
-      return;
-    }
-    const update: Task = { ...selected, title, description };
-    changeTask(update);
-    setOpen(false);
-    setSelected(undefined);
   };
 
-  const handleToggleStatus = (task: Task) => {
-    toggleTaskStatus(task);
+  const handleUpdateTask: SubmitHandler<FormInputsTaskUpdate> = async (
+    data
+  ) => {
+    try {
+      if (!selected) {
+        return;
+      }
+      const task: Task = {
+        ...selected,
+        title: data.title,
+        description: data.description,
+      };
+      await changeTask(task);
+      setOpen(false);
+      setSelected(undefined);
+      resetTaskUpdate();
+    } catch {
+      // TODO: エラーハンドリング
+    }
   };
 
-  const handleDeleteTask = (task: Task) => {
-    removeTask(task.id);
+  const handleToggleStatus = async (task: Task) => {
+    try {
+      await toggleTaskStatus(task);
+    } catch {
+      // TODO: エラーハンドリング
+    }
+  };
+
+  const handleDeleteTask = async (task: Task) => {
+    try {
+      await removeTask(task.id);
+    } catch {
+      // TODO: エラーハンドリング
+    }
   };
 
   const handleOpenUpdateDialog = (task: Task) => {
     setOpen(true);
     setSelected(task);
+    setValueTaskUpdate('title', task.title);
+    setValueTaskUpdate('description', task.description);
   };
 
   const handleCloseDialog = () => {
     setOpen(false);
     setSelected(undefined);
+    resetTaskUpdate();
   };
 
   return (
     <Box>
       <Container sx={{ pt: 4 }} maxWidth="sm">
-        <form noValidate onSubmit={handleAddTask}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="title"
-            label="タスクを入力"
+        <form onSubmit={handleSubmitTaskAdd(handleAddTask)} noValidate>
+          <Controller
             name="title"
-            autoFocus
+            control={controlTaskAdd}
+            rules={{ required: true }}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={formErrorsTaskAdd.title && true}
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                required
+                label="タスクを入力"
+                helperText={
+                  formErrorsTaskAdd.title && 'タスク名を入力してください'
+                }
+                autoFocus
+              />
+            )}
           />
 
           <Button
@@ -105,7 +150,7 @@ const TodoList = () => {
       </Container>
       <Container sx={{ py: 8 }} maxWidth="md">
         <List dense={true}>
-          {task.map((task) => (
+          {tasks.map((task) => (
             <ListItem key={task.id}>
               <ListItemIcon>
                 <Checkbox
@@ -144,25 +189,41 @@ const TodoList = () => {
           ))}
         </List>
         <Dialog open={open} onClose={handleCloseDialog}>
-          <form noValidate onSubmit={handleUpdateTask}>
+          <form noValidate onSubmit={handleSubmitTaskUpdate(handleUpdateTask)}>
             <DialogContent>
-              <TextField
-                autoFocus
-                margin="normal"
-                label="タスク名"
-                type="text"
-                fullWidth
+              <Controller
                 name="title"
-                defaultValue={selected?.title}
+                control={controlTaskUpadate}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    required
+                    margin="normal"
+                    label="タスク名"
+                    type="text"
+                    fullWidth
+                    error={formErrorsTaskUpdate.title && true}
+                    helperText={
+                      formErrorsTaskUpdate.title && 'タスク名を入力してください'
+                    }
+                  />
+                )}
               />
-              <TextField
-                autoFocus
-                margin="normal"
-                label="詳細"
-                type="text"
-                fullWidth
+              <Controller
                 name="description"
-                defaultValue={selected?.description}
+                control={controlTaskUpadate}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    margin="normal"
+                    label="詳細"
+                    type="text"
+                    fullWidth
+                  />
+                )}
               />
             </DialogContent>
             <DialogActions>
