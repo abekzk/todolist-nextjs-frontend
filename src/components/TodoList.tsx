@@ -21,6 +21,7 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
+  CircularProgress,
 } from '@mui/material';
 import { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
@@ -35,8 +36,14 @@ type FormInputsTaskUpdate = {
 };
 
 const TodoList = () => {
-  const { tasks, addTask, toggleTaskStatus, changeTask, removeTask } =
-    useTask();
+  const {
+    tasks,
+    isLoading,
+    addTask,
+    toggleTaskStatus,
+    changeTask,
+    removeTask,
+  } = useTask();
   const [open, setOpen] = useState(false); // タスク更新モーダルのstate
   const [selected, setSelected] = useState<Task>(); // 更新対象のタスクのstate
   const [openErrToast, setOpenErrToast] = useState(false); // エラートースト表示表のstate
@@ -156,45 +163,73 @@ const TodoList = () => {
         </form>
       </Container>
       <Container sx={{ py: 4 }} maxWidth="md">
-        <List dense={true}>
-          {tasks.map((task) => (
-            <ListItem key={task.id}>
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={task.status === 'DONE'}
-                  tabIndex={-1}
-                  onChange={() => handleToggleStatus(task)}
-                />
-              </ListItemIcon>
-              <ListItemText
-                primary={task.title}
-                secondary={task.description}
-                sx={{
-                  textDecoration:
-                    task.status === 'DONE' ? 'line-through' : 'none',
-                }}
-              />
+        {isLoading && ( // ローディング
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        {!isLoading &&
+          tasks.length == 0 && ( // タスクなしの場合
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                color: 'text.disabled',
+                fontWeight: 'bold',
+              }}
+            >
+              タスクはありません
+            </Box>
+          )}
+        {!isLoading &&
+          tasks.length > 0 && ( // タスクありの場合
+            <List dense={true}>
+              {tasks.map((task) => (
+                <ListItem key={task.id}>
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={task.status === 'DONE'}
+                      tabIndex={-1}
+                      onChange={() => handleToggleStatus(task)}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={task.title}
+                    secondary={task.description}
+                    sx={{
+                      textDecoration:
+                        task.status === 'DONE' ? 'line-through' : 'none',
+                    }}
+                  />
 
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  aria-label="Edit"
-                  onClick={() => handleOpenUpdateDialog(task)}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => handleDeleteTask(task)}
-                >
-                  <DeleteOutlineRoundedIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="Edit"
+                      onClick={() => handleOpenUpdateDialog(task)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleDeleteTask(task)}
+                    >
+                      <DeleteOutlineRoundedIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          )}
         <Dialog open={open} onClose={handleCloseDialog}>
           <form noValidate onSubmit={handleSubmitTaskUpdate(handleUpdateTask)}>
             <DialogContent>
