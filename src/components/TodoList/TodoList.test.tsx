@@ -16,7 +16,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 
-jest.mock('../services/api/task');
+jest.mock('../../services/api/task');
 const mockFetchTasks = fetchTasks as jest.MockedFunction<typeof fetchTasks>;
 const mockCreateTask = createTask as jest.MockedFunction<typeof createTask>;
 const mockUpdateTask = updateTask as jest.MockedFunction<typeof updateTask>;
