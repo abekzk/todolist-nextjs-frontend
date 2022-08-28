@@ -52,18 +52,24 @@ describe('<TodoList />', () => {
     await waitFor(() => screen.getByText('タスク名1'));
 
     expect(mockFetchTasks).toBeCalledTimes(1);
+    expect(mockFetchTasks).toBeCalledWith({ sort: '-created_at' });
     expect(screen.getByText('タスク名1')).toBeInTheDocument();
     expect(screen.getByText('タスク詳細1')).toBeInTheDocument();
   });
 
   test('タスクの追加', async () => {
     const user = userEvent.setup();
-    const created: Task = {
-      id: 'c3e6597744104a36a35616557d920666',
+    const inputed: Task = {
+      id: '',
       title: 'タスク名1',
-      description: '',
       status: 'TODO',
+      description: '',
     };
+    const created: Task = {
+      ...inputed,
+      id: 'c3e6597744104a36a35616557d920666',
+    };
+
     mockFetchTasks.mockResolvedValueOnce([]);
     mockFetchTasks.mockResolvedValue([created]);
     mockCreateTask.mockResolvedValue(created);
@@ -73,12 +79,13 @@ describe('<TodoList />', () => {
 
     await user.type(
       screen.getByRole('textbox', { name: 'タスクを入力' }),
-      'testtask1'
+      'タスク名1'
     );
     await user.click(screen.getByRole('button', { name: 'Add Todo' }));
 
     expect(mockFetchTasks).toBeCalledTimes(2);
     expect(mockCreateTask).toBeCalledTimes(1);
+    expect(mockCreateTask).toBeCalledWith(inputed);
     expect(screen.getByText('タスク名1')).toBeInTheDocument();
   });
 
@@ -102,15 +109,17 @@ describe('<TodoList />', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }));
     await user.type(
       screen.getByRole('textbox', { name: '詳細' }),
-      'タスクの詳細1'
+      'タスク詳細1'
     );
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitForElementToBeRemoved(() =>
       screen.getByRole('button', { name: 'Save' })
     );
+
     expect(mockFetchTasks).toBeCalledTimes(2);
     expect(mockUpdateTask).toBeCalledTimes(1);
+    expect(mockUpdateTask).toBeCalledWith(updated);
     expect(screen.getByText('タスク詳細1')).toBeInTheDocument();
   });
 
@@ -132,8 +141,10 @@ describe('<TodoList />', () => {
 
     await user.click(screen.getByRole('checkbox'));
     await waitFor(() => expect(screen.getByRole('checkbox')).toBeChecked());
+
     expect(mockFetchTasks).toBeCalledTimes(2);
     expect(mockUpdateTask).toBeCalledTimes(1);
+    expect(mockUpdateTask).toBeCalledWith(updated);
   });
 
   test('タスクの削除', async () => {
@@ -153,7 +164,9 @@ describe('<TodoList />', () => {
 
     await user.click(screen.getByRole('button', { name: 'delete' }));
     await waitFor(() => screen.getByText('タスクはありません'));
+
     expect(mockFetchTasks).toBeCalledTimes(2);
     expect(mockDeleteTask).toBeCalledTimes(1);
+    expect(mockDeleteTask).toBeCalledWith(task.id);
   });
 });
