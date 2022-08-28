@@ -1,10 +1,10 @@
-import Task from '../models/task';
+import Task from '../../models/task';
 import {
   fetchTasks,
   createTask,
   updateTask,
   deleteTask,
-} from '../services/api/task';
+} from '../../services/api/task';
 import TodoList from './TodoList';
 import '@testing-library/jest-dom';
 import {

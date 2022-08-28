@@ -1,6 +1,6 @@
-import { useTask } from '../hooks/task';
-import Task from '../models/task';
-import ErrorToast from './ErrorToast';
+import Task from '../../models/task';
+import ErrorToast from '../ErrorToast';
+import { useTask } from './hooks';
 import {
   DeleteOutlineRounded as DeleteOutlineRoundedIcon,
   Edit as EditIcon,

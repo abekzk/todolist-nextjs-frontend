@@ -1,5 +1,5 @@
 import Layout from '../components/Layout';
-import TodoList from '../components/TodoList';
+import TodoList from '../components/TodoList/TodoList';
 import { useAuth } from '../providers/AuthProvider';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
