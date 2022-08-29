@@ -1,11 +1,11 @@
-import Task, { TaskStatusType } from '../models/task';
+import Task, { TaskStatusType } from '../../models/task';
 import {
   fetchTasks,
   createTask,
   updateTask,
   deleteTask,
   TaskFetchParams,
-} from '../services/api/task';
+} from '../../services/api/task';
 import useSWR from 'swr';
 
 interface TaskHooks {
