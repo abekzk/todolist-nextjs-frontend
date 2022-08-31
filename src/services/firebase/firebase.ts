@@ -1,6 +1,7 @@
 import { FIREBASE_CONFIG } from '../../configs/config';
 import User from '../../models/user';
-import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+import { initializeApp, getApps } from 'firebase/app';
 import Firebase, {
   getAuth,
   onAuthStateChanged,
@@ -9,7 +10,12 @@ import Firebase, {
   signOut,
 } from 'firebase/auth';
 
-initializeApp(FIREBASE_CONFIG);
+if (typeof window != 'undefined' && !getApps().length) {
+  // Initialize Firebase
+  const app = initializeApp(FIREBASE_CONFIG);
+  // Initialize Analytics and get a reference to the service
+  getAnalytics(app);
+}
 
 function toModelUser(_user: Firebase.UserInfo): User {
   const user: User = {
