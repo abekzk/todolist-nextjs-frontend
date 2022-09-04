@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "test": "jest",
+    "snapshot": "jest --updateSnapshot",
     "start": "next start",
     "lint": "next lint",
     "fmt": "prettier --write .",
