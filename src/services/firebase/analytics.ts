@@ -18,4 +18,19 @@ function logEvent(key: string, value?: object) {
   log(analytics, key, value);
 }
 
-export { logEvent };
+// page_view用のパラメータ
+type PageParams = {
+  page_title?: string;
+  page_location?: string;
+  page_path?: string;
+};
+
+// ページビューログの処理
+function logPage(params: PageParams) {
+  if (typeof window == 'undefined') return; // レンダリング後のみ有効
+
+  const analytics = getAnalytics();
+  log(analytics, 'page_view', params);
+}
+
+export { logEvent, logPage };

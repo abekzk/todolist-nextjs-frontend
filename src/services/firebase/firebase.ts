@@ -1,6 +1,6 @@
 import { FIREBASE_CONFIG } from '../../configs/config';
 import User from '../../models/user';
-import { getAnalytics } from 'firebase/analytics';
+import { initializeAnalytics } from 'firebase/analytics';
 import { initializeApp, getApps } from 'firebase/app';
 import Firebase, {
   getAuth,
@@ -15,7 +15,7 @@ export function initFirebase() {
     // Initialize Firebase
     const app = initializeApp(FIREBASE_CONFIG);
     // Initialize Analytics and get a reference to the service
-    getAnalytics(app);
+    initializeAnalytics(app);
   }
 }
 

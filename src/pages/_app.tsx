@@ -1,4 +1,5 @@
 import { AuthProvider } from '../providers/AuthProvider';
+import { LogProvider } from '../providers/LogProvider';
 import { initFirebase } from '../services/firebase/firebase';
 import theme from '../styles/theme';
 import createCache from '@emotion/cache';
@@ -16,7 +17,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider>
-          <Component {...pageProps} />
+          <LogProvider>
+            <Component {...pageProps} />
+          </LogProvider>
         </AuthProvider>
       </ThemeProvider>
     </CacheProvider>
