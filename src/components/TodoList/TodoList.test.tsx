@@ -21,6 +21,7 @@ const mockFetchTasks = fetchTasks as jest.MockedFunction<typeof fetchTasks>;
 const mockCreateTask = createTask as jest.MockedFunction<typeof createTask>;
 const mockUpdateTask = updateTask as jest.MockedFunction<typeof updateTask>;
 const mockDeleteTask = deleteTask as jest.MockedFunction<typeof deleteTask>;
+jest.mock('../../services/firebase/analytics');
 
 describe('<TodoList />', () => {
   beforeEach(() => {

@@ -10,6 +10,7 @@ const mockGetToken = getToken as jest.MockedFunction<typeof getToken>;
 mockGetToken.mockResolvedValue('testtoken');
 const mockGetUser = getUser as jest.MockedFunction<typeof getUser>;
 mockGetUser.mockResolvedValue({ email: 'test@example.com' });
+jest.mock('../src/services/firebase/analytics');
 
 beforeAll(() => mockServer.listen());
 afterEach(() => mockServer.resetHandlers());
