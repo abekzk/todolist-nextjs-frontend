@@ -1,4 +1,5 @@
 import { useAuth } from '../providers/AuthProvider';
+import { logEvent } from '../services/firebase/analytics';
 import ErrorToast from './ErrorToast';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
@@ -34,6 +35,7 @@ const SignIn = () => {
   const handleSignIn: SubmitHandler<FormInputs> = async (data) => {
     try {
       await signIn(data.email, data.password);
+      logEvent('login', { method: 'email' });
       router.push('/');
     } catch {
       setOpen(true);

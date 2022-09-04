@@ -1,4 +1,5 @@
 import { useAuth } from '../providers/AuthProvider';
+import { logEvent } from '../services/firebase/analytics';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import {
   AppBar,
@@ -35,6 +36,7 @@ const Layout = ({ children, title }: Props) => {
     try {
       await signOut();
       router.push('/signin');
+      logEvent('logout');
     } catch (err) {
       setAnchorEl(null);
     }
