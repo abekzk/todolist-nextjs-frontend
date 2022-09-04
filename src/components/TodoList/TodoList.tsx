@@ -1,4 +1,5 @@
 import Task from '../../models/task';
+import { logEvent, logView } from '../../services/firebase/analytics';
 import ErrorToast from '../ErrorToast';
 import { useTask } from './hooks';
 import {
@@ -65,6 +66,7 @@ const TodoList = () => {
   const handleAddTask: SubmitHandler<FormInputsTaskAdd> = async (data) => {
     try {
       await addTask(data.title);
+      logEvent('add_task');
       resetTaskAdd();
     } catch {
       setOpenErrToast(true);
@@ -85,6 +87,7 @@ const TodoList = () => {
         description: data.description,
       };
       await changeTask(task);
+      logEvent('update_task');
       setOpen(false);
       setSelected(undefined);
       resetTaskUpdate();
@@ -97,6 +100,7 @@ const TodoList = () => {
   const handleToggleStatus = async (task: Task) => {
     try {
       await toggleTaskStatus(task);
+      logEvent('update_task');
     } catch {
       setOpenErrToast(true);
       setErrMessage('タスクの更新に失敗しました');
@@ -106,6 +110,7 @@ const TodoList = () => {
   const handleDeleteTask = async (task: Task) => {
     try {
       await removeTask(task.id);
+      logEvent('delete_task');
     } catch {
       setOpenErrToast(true);
       setErrMessage('タスクの削除に失敗しました');
@@ -117,6 +122,7 @@ const TodoList = () => {
     setSelected(task);
     setValueTaskUpdate('title', task.title);
     setValueTaskUpdate('description', task.description);
+    logView('update_modal');
   };
 
   const handleCloseDialog = () => {
