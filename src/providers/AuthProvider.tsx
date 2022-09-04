@@ -4,7 +4,7 @@ import {
   loginUser,
   logoutUser,
   createUser,
-} from '../services/firebase/firebase';
+} from '../services/firebase/authentication';
 import {
   ReactNode,
   useContext,

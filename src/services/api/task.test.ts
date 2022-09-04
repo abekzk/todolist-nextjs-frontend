@@ -1,9 +1,9 @@
 import Task from '../../models/task';
-import { getToken } from '../firebase/firebase';
+import { getToken } from '../firebase/authentication';
 import { mockServer } from './mocks/server';
 import { fetchTasks, createTask, updateTask, deleteTask } from './task';
 
-jest.mock('../firebase/firebase');
+jest.mock('../firebase/authentication');
 const mockGetToken = getToken as jest.MockedFunction<typeof getToken>;
 mockGetToken.mockResolvedValue('testtoken');
 

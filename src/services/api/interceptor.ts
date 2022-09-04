@@ -1,4 +1,4 @@
-import { getToken } from '../firebase/firebase';
+import { getToken } from '../firebase/authentication';
 import { AxiosRequestConfig } from 'axios';
 
 export async function setTokenInterceptor(config: AxiosRequestConfig) {
