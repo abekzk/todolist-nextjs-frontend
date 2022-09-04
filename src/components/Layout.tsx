@@ -21,7 +21,7 @@ type Props = {
 };
 
 const Layout = ({ children, title }: Props) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // TODO: ここの処理の理解
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const router = useRouter();
   const { auth, signOut } = useAuth();
 

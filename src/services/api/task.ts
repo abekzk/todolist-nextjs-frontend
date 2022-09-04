@@ -16,7 +16,6 @@ export type TaskFetchParams = {
 
 export async function fetchTasks(p: TaskFetchParams): Promise<Task[]> {
   try {
-    // Call
     const params = { sort: p.sort };
     const res = await client.get<TaskDTO[]>('/v1/tasks', { params });
 
