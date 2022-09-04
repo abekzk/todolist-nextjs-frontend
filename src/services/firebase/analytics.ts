@@ -6,16 +6,16 @@ function logEvent(key: 'update_task'): void;
 function logEvent(key: 'delete_task'): void;
 
 // ログイン関連イベントシグネチャ
-function logEvent(key: 'login', value: { method: 'email' | 'google' }): void;
-function logEvent(key: 'sign_up', value: { method: 'email' | 'google' }): void;
+function logEvent(key: 'login', params: { method: 'email' | 'google' }): void;
+function logEvent(key: 'sign_up', params: { method: 'email' | 'google' }): void;
 function logEvent(key: 'logout'): void;
 
 // イベントログの処理
-function logEvent(key: string, value?: object) {
+function logEvent(key: string, params?: object) {
   if (typeof window == 'undefined') return; // レンダリング後のみ有効
 
   const analytics = getAnalytics();
-  log(analytics, key, value);
+  log(analytics, key, params);
 }
 
 // ビューログの処理
