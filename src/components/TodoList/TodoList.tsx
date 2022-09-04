@@ -1,5 +1,5 @@
 import Task from '../../models/task';
-import { logEvent } from '../../services/firebase/analytics';
+import { logEvent, logView } from '../../services/firebase/analytics';
 import ErrorToast from '../ErrorToast';
 import { useTask } from './hooks';
 import {
@@ -122,6 +122,7 @@ const TodoList = () => {
     setSelected(task);
     setValueTaskUpdate('title', task.title);
     setValueTaskUpdate('description', task.description);
+    logView('update_modal');
   };
 
   const handleCloseDialog = () => {
