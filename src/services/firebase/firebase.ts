@@ -10,11 +10,13 @@ import Firebase, {
   signOut,
 } from 'firebase/auth';
 
-if (typeof window != 'undefined' && !getApps().length) {
-  // Initialize Firebase
-  const app = initializeApp(FIREBASE_CONFIG);
-  // Initialize Analytics and get a reference to the service
-  getAnalytics(app);
+export function initFirebase() {
+  if (typeof window != 'undefined' && !getApps().length) {
+    // Initialize Firebase
+    const app = initializeApp(FIREBASE_CONFIG);
+    // Initialize Analytics and get a reference to the service
+    getAnalytics(app);
+  }
 }
 
 function toModelUser(_user: Firebase.UserInfo): User {
